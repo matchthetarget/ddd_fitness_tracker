@@ -5,7 +5,7 @@ class CreateLogs < ActiveRecord::Migration[6.0]
       t.integer :user_id
       t.datetime :started_at
       t.integer :duration
-      t.integer :distance
+      t.decimal :distance
       t.integer :calories
 
       t.timestamps

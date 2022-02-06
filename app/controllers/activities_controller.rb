@@ -2,8 +2,11 @@ class ActivitiesController < ApplicationController
   before_action :set_activity, only: %i[show edit update destroy]
 
   def index
-    @q = Activity.ransack(params[:q])
-    @activities = @q.result(distinct: true).includes(:logs).page(params[:page]).per(10)
+    @q = current_user.logs.ransack(params[:q])
+    @logs = @q.result(distinct: true).includes(:user, :activity).order(started_at: :desc).page(params[:page]).per(15)
+    @new_log = current_user.logs.build(
+      started_at: Date.today
+    )
   end
 
   def show

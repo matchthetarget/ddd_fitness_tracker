@@ -2,9 +2,15 @@ class LogsController < ApplicationController
   before_action :set_log, only: %i[show edit update destroy]
 
   def index
-    @q = Log.ransack(params[:q])
-    @logs = @q.result(distinct: true).includes(:user,
-                                               :activity).page(params[:page]).per(10)
+    @q = current_user.logs.ransack(params[:q])
+    @logs = @q.result(distinct: true)
+      .includes(:user, :activity)
+      .order(started_at: :desc)
+      .page(params[:page])
+      .per(15)
+    @new_log = current_user.logs.build(
+      started_at: DateTime.now
+    )
   end
 
   def show; end
@@ -23,7 +29,7 @@ class LogsController < ApplicationController
       if Rails.application.routes.recognize_path(request.referer)[:controller] != Rails.application.routes.recognize_path(request.path)[:controller]
         redirect_back fallback_location: request.referer, notice: message
       else
-        redirect_to @log, notice: message
+        redirect_to logs_url, notice: message
       end
     else
       render :new
@@ -32,7 +38,7 @@ class LogsController < ApplicationController
 
   def update
     if @log.update(log_params)
-      redirect_to @log, notice: "Log was successfully updated."
+      redirect_to root_url, notice: "Log was successfully updated."
     else
       render :edit
     end

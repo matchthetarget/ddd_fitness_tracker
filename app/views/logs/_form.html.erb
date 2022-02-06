@@ -14,7 +14,7 @@
     <% end %>
 
     <%= f.label :activity_id %>
-    <%= f.collection_select :activity_id, Activity.all, :id, :to_s, {}, class: "form-control" %>
+    <%= f.collection_select :activity_id, Activity.order(:name), :id, :to_s, {}, class: "form-control activity-select", onChange: "toggleDistance()" %>
     <% if activity_was_invalid %>
       <% log.errors.full_messages_for(:activity).each do |message| %>
         <div class="invalid-feedback d-flex">
@@ -23,6 +23,7 @@
       <% end %>
     <% end %>
   </div>
+  
   <div class="form-group">
     <% user_class = "form-control" %>
     <% user_was_invalid = log.errors.include?(:user) %>
@@ -35,15 +36,7 @@
       <% end %>
     <% end %>
 
-    <%= f.label :user_id %>
-    <%= f.collection_select :user_id, User.all, :id, :to_s, {}, class: "form-control" %>
-    <% if user_was_invalid %>
-      <% log.errors.full_messages_for(:user).each do |message| %>
-        <div class="invalid-feedback d-flex">
-          <%= message %>
-        </div>
-      <% end %>
-    <% end %>
+    <%= f.hidden_field :user_id, value: current_user.id %>
   </div>
   <div class="form-group">
     <% started_at_class = "form-control" %>
@@ -58,14 +51,20 @@
     <% end %>
 
     <%= f.label :started_at %>
-    <%= f.datetime_select :started_at, class: started_at_class, placeholder: "Enter started at" %>
-    <% if started_at_was_invalid %>
-      <% log.errors.full_messages_for(:started_at).each do |message| %>
-        <div class="invalid-feedback d-flex">
-          <%= message %>
-        </div>
-      <% end %>
-    <% end %>
+    <div class='input-group date' id='started_at_picker' data-target-input="nearest">
+      <%= f.text_field :started_at, :class => started_at_class, :placeholder => "When did you do the activity?", value: nil, :data => {:target => '#started_at_picker'} %>
+      <div class="input-group-append" data-target='#started_at_picker' data-toggle="datetimepicker">
+        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      $(function () {
+        $('#started_at_picker').datetimepicker({
+          format: 'MM/DD/YYYY hh:mm:ss',
+          defaultDate: '<%= log.started_at.present? ? log.started_at.strftime("%b %e, %l:%M %p") : Date.today.strftime("%b , %-l:%M %p") %>'
+        });
+      });
+    </script>
   </div>
   <div class="form-group">
     <% duration_class = "form-control" %>
@@ -89,7 +88,7 @@
       <% end %>
     <% end %>
   </div>
-  <div class="form-group">
+  <div class="form-group" id="distance-field">
     <% distance_class = "form-control" %>
     <% distance_was_invalid = log.errors.include?(:distance) %>
 
@@ -101,8 +100,8 @@
       <% end %>
     <% end %>
 
-    <%= f.label :distance %>
-    <%= f.number_field :distance, class: distance_class, placeholder: "Enter distance" %>
+    <%= f.label :distance, "Distance (in miles)" %>
+    <%= f.number_field :distance, class: distance_class, placeholder: "Enter distance", step: 0.1 %>
     <% if distance_was_invalid %>
       <% log.errors.full_messages_for(:distance).each do |message| %>
         <div class="invalid-feedback d-flex">
@@ -111,6 +110,22 @@
       <% end %>
     <% end %>
   </div>
+
+  <script>
+      function toggleDistance() {
+        console.log("dd");
+          var activity = document.getElementsByClassName('activity-select')[0];
+          var cont = document.getElementById('distance-field');
+          console.log(activity.value)
+          console.log(cont.style.display)
+          if (activity.value == '5') {
+              cont.style.display = 'none';
+          }
+          else {
+              cont.style.display = 'block';
+          }
+      }
+  </script>
   <div class="form-group">
     <% calory_class = "form-control" %>
     <% calory_was_invalid = log.errors.include?(:calory) %>
@@ -124,7 +139,7 @@
     <% end %>
 
     <%= f.label :calories %>
-    <%= f.number_field :calories, class: calory_class, placeholder: "Enter calory" %>
+    <%= f.number_field :calories, class: calory_class, placeholder: "Enter calories" %>
     <% if calory_was_invalid %>
       <% log.errors.full_messages_for(:calory).each do |message| %>
         <div class="invalid-feedback d-flex">
