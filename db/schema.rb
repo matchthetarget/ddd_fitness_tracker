@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2022_02_03_225242) do
     t.integer "activity_id", null: false
     t.integer "user_id", null: false
     t.datetime "started_at"
-    t.integer "duration"
+    t.string "duration"
     t.decimal "distance"
     t.integer "calories"
     t.datetime "created_at", precision: 6, null: false

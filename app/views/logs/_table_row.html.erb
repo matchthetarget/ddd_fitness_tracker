@@ -1,9 +1,9 @@
 <tr>
   <td><%= log.started_at.strftime("%b %e, %l:%M %p") %></td>
   <td><%= log.activity.name %></td>
-  <td><%= log.activity.id == 5 ? "N/A" : log.distance %></td>
+  <td><%= log.activity.id == 5 ? "N/A" : log.distance.to_s + " miles" %></td>
   <td><%= log.duration %></td>
-  <td><%= log.calories %></td>
+  <td><%= log.calories %> cals</td>
   <td>
     <%= link_to edit_log_url(log), class: "btn btn-sm btn-outline-secondary mr-1" do %>
       <i class="fas fa-edit"></i>

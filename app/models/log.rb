@@ -8,7 +8,8 @@ class Log < ApplicationRecord
   # Indirect associations
 
   # Validations
-
+  validates :started_at, presence: true
+  validates :duration, presence: true
   # Scopes
 
   def to_s

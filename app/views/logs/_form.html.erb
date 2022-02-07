@@ -60,8 +60,7 @@
     <script type="text/javascript">
       $(function () {
         $('#started_at_picker').datetimepicker({
-          format: 'MM/DD/YYYY hh:mm:ss',
-          defaultDate: '<%= log.started_at.present? ? log.started_at.strftime("%b %e, %l:%M %p") : Date.today.strftime("%b , %-l:%M %p") %>'
+          format: 'MM/DD/YYYY hh:mm:ss'
         });
       });
     </script>
@@ -78,8 +77,8 @@
       <% end %>
     <% end %>
 
-    <%= f.label :duration %>
-    <%= f.number_field :duration, class: duration_class, placeholder: "Enter duration" %>
+    <%= f.label :duration, for: "duration" %>
+    <%= f.text_field :duration, id: "duration", class: duration_class, placeholder: "Enter duration" %>
     <% if duration_was_invalid %>
       <% log.errors.full_messages_for(:duration).each do |message| %>
         <div class="invalid-feedback d-flex">
